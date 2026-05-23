@@ -22,6 +22,8 @@ import {
   numberFormatToKey,
 } from '../../models/formatting-preferences'
 import { formatNumber } from '../../lib/format-number'
+import { normalizeAppLanguage, t } from '../../lib/i18n'
+import type { AppLanguage } from '../../lib/i18n'
 
 interface IAppearanceProps {
   readonly selectedTheme: ApplicationTheme
@@ -36,6 +38,8 @@ interface IAppearanceProps {
   readonly onSelectedNumberFormatChanged: (format: INumberFormat) => void
   readonly preferAbsoluteDates: boolean
   readonly onPreferAbsoluteDatesChanged: (value: boolean) => void
+  readonly selectedAppLanguage: AppLanguage
+  readonly onSelectedAppLanguageChanged: (language: AppLanguage) => void
 }
 
 interface IAppearanceState {
@@ -131,6 +135,14 @@ export class Appearance extends React.Component<
     this.props.onPreferAbsoluteDatesChanged(event.currentTarget.checked)
   }
 
+  private onSelectedAppLanguageChanged = (
+    event: React.FormEvent<HTMLSelectElement>
+  ) => {
+    this.props.onSelectedAppLanguageChanged(
+      normalizeAppLanguage(event.currentTarget.value)
+    )
+  }
+
   public renderThemeSwatch = (theme: ApplicationTheme) => {
     const darkThemeImage = encodePathAsUrl(__dirname, 'static/ghd_dark.svg')
     const lightThemeImage = encodePathAsUrl(__dirname, 'static/ghd_light.svg')
@@ -140,14 +152,14 @@ export class Appearance extends React.Component<
         return (
           <span>
             <img src={lightThemeImage} alt="" />
-            <span className="theme-value-label">Light</span>
+            <span className="theme-value-label">{t('appearance.theme.light')}</span>
           </span>
         )
       case ApplicationTheme.Dark:
         return (
           <span>
             <img src={darkThemeImage} alt="" />
-            <span className="theme-value-label">Dark</span>
+            <span className="theme-value-label">{t('appearance.theme.dark')}</span>
           </span>
         )
       case ApplicationTheme.System:
@@ -162,7 +174,7 @@ export class Appearance extends React.Component<
               <img src={lightThemeImage} alt="" />
               <img src={darkThemeImage} alt="" />
             </span>
-            <span className="theme-value-label">System</span>
+            <span className="theme-value-label">{t('appearance.theme.system')}</span>
           </span>
         )
     }
@@ -172,7 +184,7 @@ export class Appearance extends React.Component<
     const selectedTheme = this.state.selectedTheme
 
     if (selectedTheme == null) {
-      return <Row>Loading system theme</Row>
+      return <Row>{t('appearance.theme.loading')}</Row>
     }
 
     const themes = [
@@ -183,7 +195,7 @@ export class Appearance extends React.Component<
 
     return (
       <div className="appearance-section">
-        <h2 id="theme-heading">Theme</h2>
+        <h2 id="theme-heading">{t('appearance.theme.heading')}</h2>
 
         <RadioGroup<ApplicationTheme>
           ariaLabelledBy="theme-heading"
@@ -204,11 +216,15 @@ export class Appearance extends React.Component<
 
     return (
       <div className="appearance-section formatting-section">
-        <h2 id="formatting-heading">Formatting</h2>
+        <h2 id="formatting-heading">{t('appearance.formatting.heading')}</h2>
 
         <Row>
           <Select
-            label={__DARWIN__ ? 'Date Format' : 'Date format'}
+            label={
+              __DARWIN__
+                ? t('appearance.formatting.date.macos')
+                : t('appearance.formatting.date.other')
+            }
             value={this.props.selectedDateFormat}
             onChange={this.onDateFormatChanged}
           >
@@ -220,7 +236,11 @@ export class Appearance extends React.Component<
           </Select>
 
           <Select
-            label={__DARWIN__ ? 'Time Format' : 'Time format'}
+            label={
+              __DARWIN__
+                ? t('appearance.formatting.time.macos')
+                : t('appearance.formatting.time.other')
+            }
             value={this.props.selectedTimeFormat}
             onChange={this.onTimeFormatChanged}
           >
@@ -233,7 +253,11 @@ export class Appearance extends React.Component<
         </Row>
 
         <Select
-          label={__DARWIN__ ? 'Number Format' : 'Number format'}
+          label={
+            __DARWIN__
+              ? t('appearance.formatting.number.macos')
+              : t('appearance.formatting.number.other')
+          }
           value={numberFormatToKey(this.props.selectedNumberFormat)}
           onChange={this.onNumberFormatChanged}
         >
@@ -249,7 +273,7 @@ export class Appearance extends React.Component<
 
         <Checkbox
           className="prefer-absolute-dates"
-          label="Prefer absolute dates over relative"
+          label={t('appearance.formatting.preferAbsoluteDates')}
           value={
             this.props.preferAbsoluteDates
               ? CheckboxValue.On
@@ -266,11 +290,15 @@ export class Appearance extends React.Component<
 
     return (
       <div className="appearance-section">
-        <h2 id="diff-heading">Diff</h2>
+        <h2 id="diff-heading">{t('appearance.diff.heading')}</h2>
 
         <Select
           value={this.state.selectedTabSize.toString()}
-          label={__DARWIN__ ? 'Tab Size' : 'Tab size'}
+          label={
+            __DARWIN__
+              ? t('appearance.diff.tabSize.macos')
+              : t('appearance.diff.tabSize.other')
+          }
           onChange={this.onSelectedTabSizeChanged}
         >
           {availableTabSizes.map(n => (
@@ -286,6 +314,17 @@ export class Appearance extends React.Component<
   public render() {
     return (
       <DialogContent>
+        <div className="appearance-section">
+          <h2 id="language-heading">{t('appearance.language.heading')}</h2>
+          <Select
+            label={t('appearance.language.label')}
+            value={this.props.selectedAppLanguage}
+            onChange={this.onSelectedAppLanguageChanged}
+          >
+            <option value="en">English</option>
+            <option value="pl">Polski</option>
+          </Select>
+        </div>
         {this.renderSelectedTheme()}
         {this.renderFormatting()}
         {this.renderSelectedTabSize()}

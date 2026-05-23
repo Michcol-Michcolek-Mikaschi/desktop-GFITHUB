@@ -371,6 +371,11 @@ import { resizableComponentClass } from '../../ui/resizable'
 import { compare } from '../compare'
 import { parseRepoRules, useRepoRulesLogic } from '../helpers/repo-rules'
 import { RepoRulesInfo } from '../../models/repo-rules'
+import type { AppLanguage } from '../i18n'
+import {
+  getPreferredAppLanguage,
+  setPreferredAppLanguage,
+} from '../i18n'
 import {
   setUseExternalCredentialHelper,
   useExternalCredentialHelper,
@@ -624,6 +629,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private selectedTheme = ApplicationTheme.System
   private currentTheme: ApplicableTheme = ApplicationTheme.Light
   private selectedTabSize = tabSizeDefault
+  private appLanguage: AppLanguage = getPreferredAppLanguage()
 
   private useWindowsOpenSSH: boolean = false
 
@@ -2636,6 +2642,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     } = this
 
     const labels: MenuLabelsEvent = {
+      appLanguage: this.appLanguage,
       selectedShell: useCustomShell ? null : selectedShell,
       selectedExternalEditor: useCustomEditor ? null : selectedExternalEditor,
       askForConfirmationOnRepositoryRemoval,
@@ -7530,6 +7537,18 @@ export class AppStore extends TypedBaseStore<IAppState> {
   public _setSelectedTheme(theme: ApplicationTheme) {
     setPersistedTheme(theme)
     this.selectedTheme = theme
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  /**
+   * Set the application display language.
+   */
+  public _setAppLanguage(language: AppLanguage) {
+    setPreferredAppLanguage(language)
+    this.appLanguage = language
+    this.updateMenuLabelsForSelectedRepository()
     this.emitUpdate()
 
     return Promise.resolve()

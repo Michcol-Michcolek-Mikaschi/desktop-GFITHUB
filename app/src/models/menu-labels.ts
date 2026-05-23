@@ -1,6 +1,10 @@
 import { Shell } from '../lib/shells'
+import type { AppLanguage } from '../lib/i18n/locales'
 
 export type MenuLabelsEvent = {
+  /** Selected application language for menu localization. */
+  readonly appLanguage?: AppLanguage
+
   /**
    * Specify the user's selected shell to display in the menu.
    *

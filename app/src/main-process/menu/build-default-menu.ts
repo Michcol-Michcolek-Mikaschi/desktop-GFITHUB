@@ -8,6 +8,7 @@ import { MenuLabelsEvent } from '../../models/menu-labels'
 import * as ipcWebContents from '../ipc-webcontents'
 import { mkdir } from 'fs/promises'
 import { buildTestMenu } from './build-test-menu'
+import { normalizeAppLanguage, translate } from '../../lib/i18n/locales'
 
 const createPullRequestLabel = __DARWIN__
   ? 'Create Pull Request'
@@ -36,6 +37,7 @@ export const separator: Electron.MenuItemConstructorOptions = {
 }
 
 export function buildDefaultMenu({
+  appLanguage,
   selectedExternalEditor,
   selectedShell,
   askForConfirmationOnForcePush,
@@ -47,6 +49,9 @@ export function buildDefaultMenu({
   askForConfirmationWhenStashingAllChanges = true,
   isChangesFilterVisible = true,
 }: MenuLabelsEvent): Electron.Menu {
+  const language = appLanguage ?? normalizeAppLanguage(app.getLocale())
+  const t = (key: Parameters<typeof translate>[0]) => translate(key, language)
+
   contributionTargetDefaultBranch = truncateWithEllipsis(
     contributionTargetDefaultBranch,
     25
@@ -524,7 +529,7 @@ export function buildDefaultMenu({
   }
 
   const showUserGuides: Electron.MenuItemConstructorOptions = {
-    label: 'Show User Guides',
+    label: t('menu.help.userGuides'),
     click() {
       shell
         .openExternal('https://docs.github.com/en/desktop')
@@ -532,14 +537,38 @@ export function buildDefaultMenu({
     },
   }
 
+  const showUserGuidesPolish: Electron.MenuItemConstructorOptions = {
+    label: t('menu.help.userGuidesPolish'),
+    click() {
+      shell
+        .openExternal('https://docs.github.com/pl/desktop')
+        .catch(err => log.error('Failed opening Polish user guides page', err))
+    },
+  }
+
   const showKeyboardShortcuts: Electron.MenuItemConstructorOptions = {
-    label: __DARWIN__ ? 'Show Keyboard Shortcuts' : 'Show keyboard shortcuts',
+    label: t('menu.help.keyboardShortcuts'),
     click() {
       shell
         .openExternal(
-          'https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/overview/keyboard-shortcuts'
+          language === 'pl'
+            ? 'https://docs.github.com/pl/desktop/installing-and-configuring-github-desktop/overview/keyboard-shortcuts'
+            : 'https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/overview/keyboard-shortcuts'
         )
         .catch(err => log.error('Failed opening keyboard shortcuts page', err))
+    },
+  }
+
+  const showPolishGuideInRepository: Electron.MenuItemConstructorOptions = {
+    label: t('menu.help.polishGuideRepo'),
+    click() {
+      shell
+        .openExternal(
+          'https://github.com/Michcol-Michcolek-Mikaschi/desktop-GFITHUB/blob/main/docs/learn-more/github-desktop-po-polsku.md'
+        )
+        .catch(err =>
+          log.error('Failed opening Polish guide from repository', err)
+        )
     },
   }
 
@@ -563,7 +592,9 @@ export function buildDefaultMenu({
     submitIssueItem,
     contactSupportItem,
     showUserGuides,
+    showUserGuidesPolish,
     showKeyboardShortcuts,
+    showPolishGuideInRepository,
     showLogsItem,
   ]
 
@@ -576,7 +607,7 @@ export function buildDefaultMenu({
     })
   } else {
     template.push({
-      label: '&Help',
+      label: t('menu.help.label'),
       submenu: [
         ...helpItems,
         separator,

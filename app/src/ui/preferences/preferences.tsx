@@ -79,6 +79,8 @@ import {
   setNumberFormatPreference,
 } from '../../models/formatting-preferences'
 import { enableFormattingPreferences } from '../../lib/feature-flag'
+import { getPreferredAppLanguage, t } from '../../lib/i18n'
+import type { AppLanguage } from '../../lib/i18n'
 
 interface IPreferencesProps {
   readonly dispatcher: Dispatcher
@@ -183,6 +185,7 @@ interface IPreferencesState {
   readonly selectedTimeFormat?: TimeFormat
   readonly selectedNumberFormat?: INumberFormat
   readonly preferAbsoluteDates?: boolean
+  readonly selectedAppLanguage: AppLanguage
 }
 
 /**
@@ -250,6 +253,7 @@ export class Preferences extends React.Component<
       selectedTimeFormat: getTimeFormatPreference(),
       selectedNumberFormat: getNumberFormatPreference(),
       preferAbsoluteDates: getPreferAbsoluteDates(),
+      selectedAppLanguage: getPreferredAppLanguage(),
     }
   }
 
@@ -341,7 +345,9 @@ export class Preferences extends React.Component<
     return (
       <Dialog
         id="preferences"
-        title={__DARWIN__ ? 'Settings' : 'Options'}
+        title={
+          __DARWIN__ ? t('preferences.title.macos') : t('preferences.title.other')
+        }
         onDismissed={this.onCancel}
         onSubmit={this.onSave}
       >
@@ -354,41 +360,41 @@ export class Preferences extends React.Component<
           >
             <span id={this.getTabId(PreferencesTab.Accounts)}>
               <Octicon className="icon" symbol={octicons.home} />
-              Accounts
+              {t('preferences.tab.accounts')}
             </span>
             <span id={this.getTabId(PreferencesTab.Integrations)}>
               <Octicon className="icon" symbol={octicons.person} />
-              Integrations
+              {t('preferences.tab.integrations')}
             </span>
             {this.isCopilotSdkEnabled && (
               <span id={this.getTabId(PreferencesTab.Copilot)}>
                 <Octicon className="icon" symbol={octicons.copilot} />
-                Copilot
+                {t('preferences.tab.copilot')}
               </span>
             )}
             <span id={this.getTabId(PreferencesTab.Git)}>
               <Octicon className="icon" symbol={octicons.gitCommit} />
-              Git
+              {t('preferences.tab.git')}
             </span>
             <span id={this.getTabId(PreferencesTab.Appearance)}>
               <Octicon className="icon" symbol={octicons.paintbrush} />
-              Appearance
+              {t('preferences.tab.appearance')}
             </span>
             <span id={this.getTabId(PreferencesTab.Notifications)}>
               <Octicon className="icon" symbol={octicons.bell} />
-              Notifications
+              {t('preferences.tab.notifications')}
             </span>
             <span id={this.getTabId(PreferencesTab.Prompts)}>
               <Octicon className="icon" symbol={octicons.question} />
-              Prompts
+              {t('preferences.tab.prompts')}
             </span>
             <span id={this.getTabId(PreferencesTab.Advanced)}>
               <Octicon className="icon" symbol={octicons.gear} />
-              Advanced
+              {t('preferences.tab.advanced')}
             </span>
             <span id={this.getTabId(PreferencesTab.Accessibility)}>
               <Octicon className="icon" symbol={octicons.accessibility} />
-              Accessibility
+              {t('preferences.tab.accessibility')}
             </span>
           </TabBar>
 
@@ -594,6 +600,8 @@ export class Preferences extends React.Component<
               this.state.preferAbsoluteDates ?? getPreferAbsoluteDates()
             }
             onPreferAbsoluteDatesChanged={this.onPreferAbsoluteDatesChanged}
+            selectedAppLanguage={this.state.selectedAppLanguage}
+            onSelectedAppLanguageChanged={this.onSelectedAppLanguageChanged}
           />
         )
         break
@@ -817,6 +825,10 @@ export class Preferences extends React.Component<
     this.setState({ preferAbsoluteDates })
   }
 
+  private onSelectedAppLanguageChanged = (selectedAppLanguage: AppLanguage) => {
+    this.setState({ selectedAppLanguage })
+  }
+
   private onUseCustomEditorChanged = (useCustomEditor: boolean) => {
     this.setState({ useCustomEditor })
   }
@@ -896,7 +908,7 @@ export class Preferences extends React.Component<
     return (
       <DialogFooter>
         <OkCancelButtonGroup
-          okButtonText="Save"
+          okButtonText={t('preferences.save')}
           okButtonDisabled={hasDisabledError}
         />
       </DialogFooter>
@@ -1051,6 +1063,8 @@ export class Preferences extends React.Component<
     dispatcher.setDiffCheckMarksSetting(this.state.showDiffCheckMarks)
 
     dispatcher.setSelectedCopilotModels(this.state.selectedCopilotModels)
+
+    await dispatcher.setAppLanguage(this.state.selectedAppLanguage)
 
     if (enableFormattingPreferences()) {
       if (this.state.selectedDateFormat !== undefined) {

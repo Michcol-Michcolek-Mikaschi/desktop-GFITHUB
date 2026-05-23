@@ -128,6 +128,7 @@ import { UnreachableCommitsTab } from '../history/unreachable-commits-dialog'
 import { sendNonFatalException } from '../../lib/helpers/non-fatal-exception'
 import { SignInResult } from '../../lib/stores/sign-in-store'
 import { ICustomIntegration } from '../../lib/custom-integration'
+import type { AppLanguage } from '../../lib/i18n'
 import { isAbsolute } from 'path'
 import { CLIAction } from '../../lib/cli-action'
 import { BypassReasonType } from '../secret-scanning/bypass-push-protection-dialog'
@@ -2539,6 +2540,13 @@ export class Dispatcher {
    */
   public setSelectedTheme(theme: ApplicationTheme) {
     return this.appStore._setSelectedTheme(theme)
+  }
+
+  /**
+   * Set the application display language.
+   */
+  public setAppLanguage(language: AppLanguage) {
+    return this.appStore._setAppLanguage(language)
   }
 
   /**
