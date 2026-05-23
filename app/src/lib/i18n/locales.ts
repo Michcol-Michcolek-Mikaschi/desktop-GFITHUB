@@ -15,6 +15,8 @@ export type TranslationKey =
   | 'preferences.save'
   | 'appearance.language.heading'
   | 'appearance.language.label'
+  | 'appearance.language.option.english'
+  | 'appearance.language.option.polish'
   | 'appearance.theme.heading'
   | 'appearance.theme.light'
   | 'appearance.theme.dark'
@@ -34,7 +36,8 @@ export type TranslationKey =
   | 'menu.help.label'
   | 'menu.help.userGuides'
   | 'menu.help.userGuidesPolish'
-  | 'menu.help.keyboardShortcuts'
+  | 'menu.help.keyboardShortcuts.macos'
+  | 'menu.help.keyboardShortcuts.other'
   | 'menu.help.polishGuideRepo'
 
 type TranslationMap = Readonly<Record<TranslationKey, string>>
@@ -54,6 +57,8 @@ const english: TranslationMap = {
   'preferences.save': 'Save',
   'appearance.language.heading': 'Language',
   'appearance.language.label': 'Display language',
+  'appearance.language.option.english': 'English',
+  'appearance.language.option.polish': 'Polski',
   'appearance.theme.heading': 'Theme',
   'appearance.theme.light': 'Light',
   'appearance.theme.dark': 'Dark',
@@ -66,14 +71,16 @@ const english: TranslationMap = {
   'appearance.formatting.time.other': 'Time format',
   'appearance.formatting.number.macos': 'Number Format',
   'appearance.formatting.number.other': 'Number format',
-  'appearance.formatting.preferAbsoluteDates': 'Prefer absolute dates over relative',
+  'appearance.formatting.preferAbsoluteDates':
+    'Prefer absolute dates over relative',
   'appearance.diff.heading': 'Diff',
   'appearance.diff.tabSize.macos': 'Tab Size',
   'appearance.diff.tabSize.other': 'Tab size',
   'menu.help.label': '&Help',
   'menu.help.userGuides': 'Show User Guides',
   'menu.help.userGuidesPolish': 'Show User Guides (Polish)',
-  'menu.help.keyboardShortcuts': 'Show keyboard shortcuts',
+  'menu.help.keyboardShortcuts.macos': 'Show Keyboard Shortcuts',
+  'menu.help.keyboardShortcuts.other': 'Show keyboard shortcuts',
   'menu.help.polishGuideRepo': 'Show Polish guide in repository',
 }
 
@@ -92,6 +99,8 @@ const polish: TranslationMap = {
   'preferences.save': 'Zapisz',
   'appearance.language.heading': 'Język',
   'appearance.language.label': 'Język interfejsu',
+  'appearance.language.option.english': 'Angielski',
+  'appearance.language.option.polish': 'Polski',
   'appearance.theme.heading': 'Motyw',
   'appearance.theme.light': 'Jasny',
   'appearance.theme.dark': 'Ciemny',
@@ -104,14 +113,16 @@ const polish: TranslationMap = {
   'appearance.formatting.time.other': 'Format czasu',
   'appearance.formatting.number.macos': 'Format liczb',
   'appearance.formatting.number.other': 'Format liczb',
-  'appearance.formatting.preferAbsoluteDates': 'Preferuj daty bezwzględne zamiast względnych',
+  'appearance.formatting.preferAbsoluteDates':
+    'Preferuj daty bezwzględne zamiast względnych',
   'appearance.diff.heading': 'Diff',
   'appearance.diff.tabSize.macos': 'Rozmiar tabulatora',
   'appearance.diff.tabSize.other': 'Rozmiar tabulatora',
   'menu.help.label': '&Pomoc',
   'menu.help.userGuides': 'Pokaż przewodniki użytkownika',
   'menu.help.userGuidesPolish': 'Pokaż przewodniki użytkownika (po polsku)',
-  'menu.help.keyboardShortcuts': 'Pokaż skróty klawiaturowe',
+  'menu.help.keyboardShortcuts.macos': 'Pokaż skróty klawiaturowe',
+  'menu.help.keyboardShortcuts.other': 'Pokaż skróty klawiaturowe',
   'menu.help.polishGuideRepo': 'Pokaż polski poradnik w repozytorium',
 }
 

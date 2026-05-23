@@ -372,10 +372,7 @@ import { compare } from '../compare'
 import { parseRepoRules, useRepoRulesLogic } from '../helpers/repo-rules'
 import { RepoRulesInfo } from '../../models/repo-rules'
 import type { AppLanguage } from '../i18n'
-import {
-  getPreferredAppLanguage,
-  setPreferredAppLanguage,
-} from '../i18n'
+import { getPreferredAppLanguage, setPreferredAppLanguage } from '../i18n'
 import {
   setUseExternalCredentialHelper,
   useExternalCredentialHelper,

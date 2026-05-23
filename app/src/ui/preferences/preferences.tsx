@@ -346,7 +346,9 @@ export class Preferences extends React.Component<
       <Dialog
         id="preferences"
         title={
-          __DARWIN__ ? t('preferences.title.macos') : t('preferences.title.other')
+          __DARWIN__
+            ? t('preferences.title.macos')
+            : t('preferences.title.other')
         }
         onDismissed={this.onCancel}
         onSubmit={this.onSave}

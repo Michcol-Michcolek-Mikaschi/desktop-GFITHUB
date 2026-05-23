@@ -152,14 +152,18 @@ export class Appearance extends React.Component<
         return (
           <span>
             <img src={lightThemeImage} alt="" />
-            <span className="theme-value-label">{t('appearance.theme.light')}</span>
+            <span className="theme-value-label">
+              {t('appearance.theme.light')}
+            </span>
           </span>
         )
       case ApplicationTheme.Dark:
         return (
           <span>
             <img src={darkThemeImage} alt="" />
-            <span className="theme-value-label">{t('appearance.theme.dark')}</span>
+            <span className="theme-value-label">
+              {t('appearance.theme.dark')}
+            </span>
           </span>
         )
       case ApplicationTheme.System:
@@ -174,7 +178,9 @@ export class Appearance extends React.Component<
               <img src={lightThemeImage} alt="" />
               <img src={darkThemeImage} alt="" />
             </span>
-            <span className="theme-value-label">{t('appearance.theme.system')}</span>
+            <span className="theme-value-label">
+              {t('appearance.theme.system')}
+            </span>
           </span>
         )
     }
@@ -312,6 +318,14 @@ export class Appearance extends React.Component<
   }
 
   public render() {
+    const languageOptions: ReadonlyArray<{
+      readonly value: AppLanguage
+      readonly label: string
+    }> = [
+      { value: 'en', label: t('appearance.language.option.english') },
+      { value: 'pl', label: t('appearance.language.option.polish') },
+    ]
+
     return (
       <DialogContent>
         <div className="appearance-section">
@@ -321,8 +335,11 @@ export class Appearance extends React.Component<
             value={this.props.selectedAppLanguage}
             onChange={this.onSelectedAppLanguageChanged}
           >
-            <option value="en">English</option>
-            <option value="pl">Polski</option>
+            {languageOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </Select>
         </div>
         {this.renderSelectedTheme()}

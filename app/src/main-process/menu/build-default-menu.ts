@@ -547,7 +547,9 @@ export function buildDefaultMenu({
   }
 
   const showKeyboardShortcuts: Electron.MenuItemConstructorOptions = {
-    label: t('menu.help.keyboardShortcuts'),
+    label: __DARWIN__
+      ? t('menu.help.keyboardShortcuts.macos')
+      : t('menu.help.keyboardShortcuts.other'),
     click() {
       shell
         .openExternal(
